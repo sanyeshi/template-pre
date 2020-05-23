@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+	<Properties>
+	    <Property name="pattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Property>
+		<Property name="filename">logs/template-pre.log</Property>
+		<Property name="filename-error">logs/template-pre-error.log</Property>
+		<Property name="filePattern">logs/template-pre-%d{yyyyMMdd}-%i.log.gz</Property>
+		<Property name="filePattern-error">logs/template-pre-error-%d{yyyyMMdd}-%i.log.gz</Property>
+	</Properties>
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${pattern}" />
+		</Console>
+		
+		<RollingRandomAccessFile name="File-INFO" fileName="${filename}" 
+		    filePattern="${filePattern}"
+			immediateFlush="false">
+			<ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+			<PatternLayout pattern="${pattern}" />
+			<TimeBasedTriggeringPolicy />
+        	<SizeBasedTriggeringPolicy size="1024 MB"/>
+        	<DefaultRolloverStrategy max="10"/>
+		</RollingRandomAccessFile>
+		
+		<RollingRandomAccessFile name="File-ERROR" fileName="${filename-error}" 
+		    filePattern="${filePattern-error}"
+			immediateFlush="false">
+			<ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+			<PatternLayout pattern="${pattern}" />
+			<TimeBasedTriggeringPolicy />
+        	<SizeBasedTriggeringPolicy size="1024 MB"/>
+        	<DefaultRolloverStrategy max="10"/>
+		</RollingRandomAccessFile>
+		
+	</Appenders>
+	<Loggers>
+		<AsyncLogger name="com.template" level="DEBUG" additivity="false">
+			<AppenderRef ref="File-INFO" />
+			<AppenderRef ref="File-ERROR" />
+			<AppenderRef ref="Console" />
+		</AsyncLogger>
+		<AsyncRoot level="DEBUG">
+			<AppenderRef ref="File-INFO" />
+			<AppenderRef ref="File-ERROR" />
+			<AppenderRef ref="Console" />
+		</AsyncRoot>
+	</Loggers>
+</Configuration>
