@@ -11,25 +11,18 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Order(value = 0)
 @Component
-public class AccessTimeAspect extends BaseAspect {
-	private static final Logger LOG=LoggerFactory.getLogger(AccessTimeAspect.class);
-	
+public class DebugAspect extends BaseAspect {
+	private static final Logger LOG = LoggerFactory.getLogger(DebugAspect.class);
+
 	@Around("execution(* com.template.pre.controller..*.*(..))")
 	public Object interceptor(ProceedingJoinPoint joinPoint) throws Throwable {
 		Object ret = null;
-		long startMs=System.currentTimeMillis();
 		try {
 			ret = joinPoint.proceed();
 		} catch (Throwable e) {
 			throw e;
-		}finally {
-			long endMs=System.currentTimeMillis();
-			LOG.info("access time {} ms,{}",endMs-startMs,formatMethod(joinPoint));
-			LOG.debug("access time {} ms,{},{},{}",
-					endMs-startMs,
-					formatMethod(joinPoint),
-					formatArgs(joinPoint),
-					formatReturn(ret));
+		} finally {
+			LOG.debug("{},{},{}", formatMethod(joinPoint), formatArgs(joinPoint), formatReturn(ret));
 		}
 		return ret;
 	}

@@ -33,6 +33,16 @@ public class BaseAspect {
 		return method;
 	}
 
+	protected String getMethodName(ProceedingJoinPoint joinPoint) {
+		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+		String methodName = signature.getName();
+		return methodName;
+	}
+
+	protected String getClassName(ProceedingJoinPoint joinPoint) {
+		return joinPoint.getTarget().getClass().getName();
+	}
+
 	protected String formatMethod(ProceedingJoinPoint joinPoint) {
 		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 		String className = joinPoint.getTarget().getClass().getName();
@@ -42,16 +52,16 @@ public class BaseAspect {
 
 	protected String formatArgs(ProceedingJoinPoint joinPoint) {
 		Object[] args = joinPoint.getArgs();
-		List<Object> params=new ArrayList<>(args.length);
+		List<Object> params = new ArrayList<>(args.length);
 		try {
 			for (Object arg : args) {
-				if(arg instanceof BindingResult) {
+				if (arg instanceof BindingResult) {
 					continue;
 				}
-				if(arg instanceof MultipartFile) {
+				if (arg instanceof MultipartFile) {
 					continue;
 				}
-				if(arg instanceof ServletRequest) {
+				if (arg instanceof ServletRequest) {
 					continue;
 				}
 				params.add(arg);
