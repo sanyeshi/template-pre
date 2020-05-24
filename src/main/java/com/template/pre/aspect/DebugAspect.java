@@ -22,7 +22,9 @@ public class DebugAspect extends BaseAspect {
 		} catch (Throwable e) {
 			throw e;
 		} finally {
-			LOG.debug("{},{},{}", formatMethod(joinPoint), formatArgs(joinPoint), formatReturn(ret));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("{},{},{}", formatMethod(joinPoint), formatArgs(joinPoint), formatReturn(ret));
+			}
 		}
 		return ret;
 	}
