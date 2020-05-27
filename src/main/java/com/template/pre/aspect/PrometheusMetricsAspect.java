@@ -18,17 +18,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.template.pre.constant.Constants;
+import com.template.pre.response.Response;
+
+import io.prometheus.client.Counter;
 import io.prometheus.client.Histogram;
 
 @Aspect
 @Order(value = 0)
 @Component
 public class PrometheusMetricsAspect extends BaseAspect {
-	static final Histogram requestLatency = Histogram.build()
-			.name("http_requests_latency_seconds")
-		    .help("Http request latency in seconds.")
-		    .buckets(0.1, 0.25, 0.5, 1, 2.5, 5)
-		    .labelNames("handler").register();
+	static final Histogram requestLatency = Histogram.build().name("http_requests_latency_seconds")
+			.help("Http request latency in seconds.").buckets(0.1, 0.25, 0.5, 1, 2.5, 5).labelNames("handler")
+			.register();
+
+	static final Counter requestFails = Counter.build().name("requests_fail").help("Total fail requests.")
+			.labelNames("handler").register();
+
 	@SuppressWarnings("rawtypes")
 	private static final Class[] MAPPING_CLASSES;
 
@@ -77,11 +83,19 @@ public class PrometheusMetricsAspect extends BaseAspect {
 			throw new IllegalStateException(
 					"Annotation could not be found for pjp \"" + joinPoint.toShortString() + "\"", e);
 		}
+		String handler = mapping.paths[0];
 		Object ret = null;
-		Histogram.Timer requestTimer = requestLatency.labels(mapping.paths[0]).startTimer();
+		Histogram.Timer requestTimer = requestLatency.labels(handler).startTimer();
 		try {
 			ret = joinPoint.proceed();
+			if (ret instanceof Response) {
+				Response<?> resp = (Response<?>) ret;
+				if (!Constants.CODE_SUCCESS.equals(resp.getCode())) {
+					requestFails.labels(handler).inc();
+				}
+			}
 		} catch (Throwable e) {
+			requestFails.labels(handler).inc();
 			throw e;
 		} finally {
 			requestTimer.observeDuration();
@@ -98,8 +112,10 @@ public class PrometheusMetricsAspect extends BaseAspect {
 			if (annot != null) {
 				return getAnnotation(annot);
 			}
-			/* When target is an AOP interface proxy but annotation is on class method
-			 (rather than Interface method).*/
+			/*
+			 * When target is an AOP interface proxy but annotation is on class method
+			 * (rather than Interface method).
+			 */
 			final String name = signature.getName();
 			final Class[] parameterTypes = signature.getParameterTypes();
 			Method method = ReflectionUtils.findMethod(pjp.getTarget().getClass(), name, parameterTypes);
