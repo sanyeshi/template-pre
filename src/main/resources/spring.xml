@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -14,19 +14,21 @@
         http://www.springframework.org/schema/aop 
         http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
 
-	<context:component-scan base-package="com.template.pre" />
+	<context:component-scan
+		base-package="com.template.pre" />
 	<aop:aspectj-autoproxy proxy-target-class="true" />
-	
-	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:config.properties</value>
 			</list>
 		</property>
 	</bean>
-	
-	<mvc:annotation-driven conversion-service="conversionService"
-		validator="validator">
+
+	<mvc:annotation-driven
+		conversion-service="conversionService">
 		<mvc:message-converters>
 			<bean
 				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
@@ -35,14 +37,16 @@
 		</mvc:message-converters>
 	</mvc:annotation-driven>
 
-	<bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
+	<bean id="objectMapper"
+		class="com.fasterxml.jackson.databind.ObjectMapper">
 		<property name="dateFormat">
 			<bean class="java.text.SimpleDateFormat">
-				<constructor-arg value="yyyy-MM-dd HH:mm:ss"/>
+				<constructor-arg value="yyyy-MM-dd HH:mm:ss" />
 			</bean>
 		</property>
 		<property name="serializationInclusion">
-			<value type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
+			<value
+				type="com.fasterxml.jackson.annotation.JsonInclude.Include">NON_NULL</value>
 		</property>
 	</bean>
 
@@ -54,10 +58,11 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<bean id="validator"
 		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+		<property name="providerClass"
+			value="org.hibernate.validator.HibernateValidator" />
 		<!-- 指定校验使用的资源文件，默认为classpath:ValidationMessages.properties -->
 		<property name="validationMessageSource" ref="messageSource" />
 	</bean>
@@ -73,6 +78,7 @@
 		<property name="cacheSeconds" value="120" />
 	</bean>
 
+
 	<!-- 文件上传 -->
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
@@ -80,7 +86,7 @@
 		<property name="maxInMemorySize" value="1048576"></property>
 		<property name="defaultEncoding" value="UTF-8"></property>
 	</bean>
-	
+
 </beans>
 
 

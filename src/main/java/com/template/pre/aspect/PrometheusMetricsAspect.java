@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import io.prometheus.client.Histogram;
 
 @Aspect
-@Order(value = -1)
+@Order(value = 0)
 @Component
 public class PrometheusMetricsAspect extends BaseAspect {
 	static final Histogram requestLatency = Histogram.build()

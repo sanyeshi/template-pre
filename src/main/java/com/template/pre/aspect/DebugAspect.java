@@ -9,7 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Aspect
-@Order(value = 0)
+@Order(value = 1)
 @Component
 public class DebugAspect extends BaseAspect {
 	private static final Logger LOG = LoggerFactory.getLogger(DebugAspect.class);

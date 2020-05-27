@@ -17,8 +17,10 @@
 			immediateFlush="false">
 			<ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
 			<PatternLayout pattern="${pattern}" />
-			<TimeBasedTriggeringPolicy />
-        	<SizeBasedTriggeringPolicy size="1024 MB"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+        		<SizeBasedTriggeringPolicy size="1024"/>
+        	</Policies>
         	<DefaultRolloverStrategy max="10"/>
 		</RollingRandomAccessFile>
 		
@@ -27,8 +29,10 @@
 			immediateFlush="false">
 			<ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
 			<PatternLayout pattern="${pattern}" />
-			<TimeBasedTriggeringPolicy />
-        	<SizeBasedTriggeringPolicy size="1024 MB"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+        		<SizeBasedTriggeringPolicy size="1024"/>
+        	</Policies>
         	<DefaultRolloverStrategy max="10"/>
 		</RollingRandomAccessFile>
 		
